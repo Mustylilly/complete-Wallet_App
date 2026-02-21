@@ -1,8 +1,3 @@
-Below is a clean, professional `README.md` tailored to your **Node.js + Express + Passport + PostgreSQL Wallet App** project.
-
-You can copy this directly into a `README.md` file at the root of your project.
-
----
 
 # 💰 Wallet App
 
