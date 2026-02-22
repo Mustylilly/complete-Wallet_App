@@ -20,4 +20,4 @@ export default pool;
   password: process.env.PG_PASSWORD,
   port: process.env.PG_PORT,
 
-  pool.connect();
+  pool.connect();*/
