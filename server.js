@@ -107,7 +107,7 @@ app.post('/auth/register', async (req, res) => {
     res.send('Error registering user');
   }
 });
-
+console.log("DATABASE_URL:", process.env.DATABASE_URL)
 // GOOGLE STRATEGY
 passport.use
 (new GoogleStrategy({
