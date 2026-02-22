@@ -62,9 +62,9 @@ app.get('/auth/register',
 app.get('/dashboard', (req, res) => {
   if (!req.isAuthenticated()) {
     return res.redirect('/login');
-  }
-  res.render('dashboard', { user: req.user });
-});
+  }else {
+    res.render('dashboard', { user: req.user });
+}});
 
 app.get('/auth/transfer', 
   (req, res) => res.render('transfer'))
@@ -113,7 +113,8 @@ passport.use
 (new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: 'http://localhost:3000/auth/google/wallet-app'
+  callbackURL: 'http://localhost:3000/auth/google/wallet-app',
+  userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo',
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     const user = await pool.query('SELECT * FROM users WHERE google_id=$1', [profile.id]);
