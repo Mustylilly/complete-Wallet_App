@@ -108,9 +108,24 @@ app.post('/auth/register', async (req, res) => {
   }
 });
 console.log("DATABASE_URL:", process.env.DATABASE_URL)
+
+// LOCAL STRATEGY (for login)
+passport.use('local', new Strategy({ usernameField: 'email' }, async (email, password, done) => {
+  try {
+    const user = await pool.query('SELECT * FROM users WHERE email=$1', [email]);
+    if (user.rows.length === 0) return done(null, false, { message: 'No user with that email' });
+
+    const validPassword = await bcrypt.compare(password, user.rows[0].password);
+    if (!validPassword) return done(null, false, { message: 'Incorrect password' });
+
+    return done(null, user.rows[0]);
+  } catch (err) {
+    return done(err);
+  }
+}));
+
 // GOOGLE STRATEGY
-passport.use
-(new GoogleStrategy({
+passport.use('google', new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
   callbackURL: 'http://localhost:3000/auth/google/wallet-app',
@@ -129,22 +144,6 @@ passport.use
     done(err, null);
   }
 }));
-
-// LOCAL STRATEGY (for login)
-passport.use(new Strategy({ usernameField: 'email' }, async (email, password, done) => {
-  try {
-    const user = await pool.query('SELECT * FROM users WHERE email=$1', [email]);
-    if (user.rows.length === 0) return done(null, false, { message: 'No user with that email' });
-
-    const validPassword = await bcrypt.compare(password, user.rows[0].password);
-    if (!validPassword) return done(null, false, { message: 'Incorrect password' });
-
-    return done(null, user.rows[0]);
-  } catch (err) {
-    return done(err);
-  }
-}));
-
 // SERIALIZE / DESERIALIZE USER
 passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser(async (id, done) => {
